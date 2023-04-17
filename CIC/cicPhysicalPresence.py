@@ -7,10 +7,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
-# Create a new instance of Edge webdriver
-mDriver = webdriver.Edge()
-mWait = WebDriverWait(mDriver, 20)
-
 # Add file path
 # data_only marked as true so only values are fetched even if those are generated from formulas
 excelWorkbook = openpyxl.load_workbook("PATH_TO_EXCEL_FILE_WITH_FILENAME_AND_EXTENSION", data_only=True)
@@ -18,7 +14,8 @@ excelWorkbook = openpyxl.load_workbook("PATH_TO_EXCEL_FILE_WITH_FILENAME_AND_EXT
 # Country | Exit Date | Exit Month | Exit Year | Entry Date | Entry Month | Entry Year | Purpose  | Exit Full Date | Entry Full Date - Header Row
 # Brazil  | 15        | April      | 2023      | 24         | May         | 2023       | Vacation | 4/15/2023      | 5/24/2023 - Data Row
 
-# Add sheet name
+# Add sheet name (assumes excel has only one sheet)
+# else use excelWorkbook['SPECIFY_SHEET_NAME']
 targetSheetName = excelWorkbook.active
 
 # Stores excel data
@@ -46,6 +43,9 @@ for row in targetSheetName.iter_rows(min_row=2, max_row=3, values_only=True):
     # print(item['entryFullDate'])
     data.append(item)
 
+# Create a new instance of Edge webdriver
+mDriver = webdriver.Edge()
+mWait = WebDriverWait(mDriver, 20)
 webAddress = "https://eservices.cic.gc.ca/rescalc/resCalcStartNew.do"
 username = "ENTER_USER_ID"
 password = "ENTER_PASSWORD"
