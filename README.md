@@ -1,2 +1,2 @@
 # PythonSelenium
-Projects to enhance learning python selenium
+Just a bored Sunday afternoon.
