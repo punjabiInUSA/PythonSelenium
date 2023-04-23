@@ -114,7 +114,6 @@ try:
         # viewAbsenceReason =  mDriver.find_element(By.XPATH, "//*[@id=\"absencesReason\"]")
         viewAbsenceReason = mDriver.find_element(By.ID, "absencesReason")
         btnAddAbsence = mDriver.find_element(By.XPATH, "//*[@id=\"wb-main-in\"]/form/section[2]/div/div[4]/input[1]")
-        btnSaveRecord = mDriver.find_element(By.NAME, "saveapp")
 
         # Focus onto absence entry area
         mDriver.execute_script("arguments[0].scrollIntoView();", viewAbsenceReason)
@@ -142,14 +141,15 @@ try:
 
         # Complete Absence record
         btnAddAbsence.click()
-
         time.sleep(3)
 
-        # Wait for the page to load before continuing
-        mWait.until(EC.visibility_of_element_located((By.ID, "absenDestination")))
-
-        btnSaveRecord.click()
-
 finally:
-    # Close the browser
+    # Save and close the browser
+    viewAbsenceReason = mDriver.find_element(By.ID, "absencesReason")
+    btnSaveRecord = mDriver.find_element(By.NAME, "saveapp")
+
+    # Wait for the page to load before saving
+    mWait.until(EC.visibility_of_element_located((By.ID, "absenDestination")))
+    btnSaveRecord.click()
+
     mDriver.quit()
