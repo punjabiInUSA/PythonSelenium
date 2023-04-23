@@ -7,6 +7,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
+"""
+This script is designed to assist individuals who need to enter absence details for the physical presence calculator
+ (link provided below). Anyone can use it free of charge. https://eservices.cic.gc.ca/rescalc/resCalcStartNew.do
+
+Link: https://citapply-citdemande.apps.cic.gc.ca/en/sign-in
+"""
+
 # Add file path
 # data_only marked as true so only values are fetched even if those are generated from formulas
 excelWorkbook = openpyxl.load_workbook("PATH_TO_EXCEL_FILE_WITH_FILENAME_AND_EXTENSION", data_only=True)
@@ -141,8 +148,7 @@ try:
         # Wait for the page to load before continuing
         mWait.until(EC.visibility_of_element_located((By.ID, "absenDestination")))
 
-        # Disabled for debugging
-        # btnSaveRecord.click()
+        btnSaveRecord.click()
 
 finally:
     # Close the browser
