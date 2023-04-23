@@ -4,7 +4,7 @@
 <br>
 
 # Project: CIC
-<b>Overview:</b> Built scripts to assist entering absence details (dates, country, reason) on Canadian immigration portal
+<b>Overview:</b> Developed scripts to assist entering absence details (dates, country, reason) on Canadian immigration portal
 ### Pre-requisites:
 1. Have an active account with CIC
 2. Install Python and required packages (Selenium, openpyxl, webDriver (depends on your preferred browser) )
