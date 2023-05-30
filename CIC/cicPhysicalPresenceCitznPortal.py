@@ -21,6 +21,8 @@ excelWorkbook = openpyxl.load_workbook("PATH_TO_EXCEL_FILE_WITH_FILENAME_AND_EXT
 # Excel Format expected as
 # Country | Exit Date | Exit Month | Exit Year | Entry Date | Entry Month | Entry Year | Purpose  | Exit Full Date | Entry Full Date - Header Row
 # Brazil  | 15        | April      | 2023      | 24         | May         | 2023       | Vacation | 4/15/2023      | 5/24/2023 - Data Row
+start_time = time.time()
+print(f'Script start time {start_time}')
 
 # Add sheet name (assumes excel has only one sheet)
 # else use excelWorkbook['SPECIFY_SHEET_NAME']
@@ -30,7 +32,7 @@ targetSheetName = excelWorkbook.active
 data = []
 
 # Remove max_row=XX, if pulling complete data from excel
-for row in targetSheetName.iter_rows(min_row=2, max_row=5, values_only=True):
+for row in targetSheetName.iter_rows(min_row=2, max_row=6, values_only=True):
     item = {
         'country': row[0],
         'exitDate': row[1],
@@ -48,7 +50,7 @@ for row in targetSheetName.iter_rows(min_row=2, max_row=5, values_only=True):
     # Prints are for debugging only
     # print(item['country'])
     # print(item['exitDate'])
-    # print(item['entryDate'])
+    print(item['entryDate'])
     data.append(item)
 
 # Create a new instance of Edge webdriver
@@ -125,4 +127,8 @@ try:
 
 finally:
     # Close the browser
+    end_time = time.time()
+    print(f'Script end time {end_time}')
     mDriver.quit()
+    elapsed_time = end_time - start_time
+    print(f'Script took {elapsed_time} seconds')

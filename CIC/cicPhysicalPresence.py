@@ -6,12 +6,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import NoSuchElementException
 
 """
 This script is designed to assist individuals who need to enter absence details for the physical presence calculator
  (link provided below). Anyone can use it free of charge. https://eservices.cic.gc.ca/rescalc/resCalcStartNew.do
 
-Link: https://citapply-citdemande.apps.cic.gc.ca/en/sign-in
+Link: https://eservices.cic.gc.ca/rescalc/resCalcStartNew.do
 """
 
 # Add file path
@@ -58,8 +59,9 @@ username = "ENTER_USER_ID"
 password = "ENTER_PASSWORD"
 
 # Navigate to the website
+start_time = time.time()
+print(f'Script start time {start_time}')
 mDriver.get(webAddress)
-
 # click retrieve saved calc button
 retrieveSavedCalc = mDriver.find_element(By.XPATH, "//*[@id=\"wb-main-in\"]/div[1]/a[5]")
 retrieveSavedCalc.click()
@@ -101,9 +103,35 @@ btnPrisonContinue = mDriver.find_element(By.NAME, "prisoncontinue")
 btnPrisonContinue.click()
 time.sleep(2)
 
+
+def delete_records():
+    while True:
+        try:
+            daysText = mDriver.find_element(By.XPATH,
+                                            "//*[@id=\"wb-main-in\"]/form/section[2]/div/table/thead/tr/th[5]")
+            mDriver.execute_script("arguments[0].scrollIntoView();", daysText)
+            # Wait for the button to become visible
+            remove_record_button = mWait.until(EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, "input.button-attention[value='Remove']")))
+            # mDriver.execute_script("arguments[0].scrollIntoView();", remove_record_button)
+            # Click the button
+            remove_record_button.click()
+            time.sleep(1)
+        except NoSuchElementException:
+            # Button is no longer visible, exit the loop
+            break
+
+
+# delete_records()
+
 try:
     # will only process one row per argument data[:1], remove this to process all rows.
     for item in data:
+        print(f'''
+        Adding entry: 
+        Exit date = {item['exitFullDate']}
+        Entry date = {item['entryFullDate']}
+        ''')
         # Page Element Definitions
         # viewAbsenceDestination = mDriver.find_element(By.XPATH, "//*[@id=\"absenDestination\"]")
         viewAbsenceDestination = mDriver.find_element(By.ID, "absenDestination")
@@ -113,11 +141,9 @@ try:
         viewToDate = mDriver.find_element(By.ID, "absenceToDate")
         # viewAbsenceReason =  mDriver.find_element(By.XPATH, "//*[@id=\"absencesReason\"]")
         viewAbsenceReason = mDriver.find_element(By.ID, "absencesReason")
-        btnAddAbsence = mDriver.find_element(By.XPATH, "//*[@id=\"wb-main-in\"]/form/section[2]/div/div[4]/input[1]")
-
         # Focus onto absence entry area
         mDriver.execute_script("arguments[0].scrollIntoView();", viewAbsenceReason)
-
+        btnAddAbsence = mDriver.find_element(By.CSS_SELECTOR, "input.button-accent[value='Add Absence']")
         # Select destination
         selectAbsenDest = Select(viewAbsenceDestination)
         selectAbsenDest.select_by_visible_text(item['country'])
@@ -137,19 +163,23 @@ try:
         viewToDate.send_keys(item['entryFullDate'])
 
         # Enter Reason for Absence
+        viewAbsenceReason.clear()
         viewAbsenceReason.send_keys(item['purpose'])
 
         # Complete Absence record
         btnAddAbsence.click()
-        time.sleep(3)
+        time.sleep(2)
 
 finally:
     # Save and close the browser
-    viewAbsenceReason = mDriver.find_element(By.ID, "absencesReason")
-    btnSaveRecord = mDriver.find_element(By.NAME, "saveapp")
+    # viewAbsenceReason = mDriver.find_element(By.ID, "absencesReason")
+    # btnSaveRecord = mDriver.find_element(By.NAME, "saveapp")
 
     # Wait for the page to load before saving
     mWait.until(EC.visibility_of_element_located((By.ID, "absenDestination")))
-    btnSaveRecord.click()
-
+    # btnSaveRecord.click()
+    end_time = time.time()
+    print(f'Script end time {end_time}')
     mDriver.quit()
+    elapsed_time = end_time - start_time
+    print(f'Script took {elapsed_time} seconds')
