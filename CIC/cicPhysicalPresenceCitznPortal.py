@@ -62,6 +62,7 @@ password = "ENTER_PASSWORD"
 
 # Navigate to the website
 mDriver.get(webAddress)
+mDriver.maximize_window()
 userField = mDriver.find_element(By.ID, "emailAddressInput")
 pwdField = mDriver.find_element(By.ID, "passwordInput")
 btnSignIn = mDriver.find_element(By.ID, "signInButton")
@@ -71,15 +72,16 @@ btnSignIn.click()
 time.sleep(2)
 
 continueAppBtn = mWait.until(EC.
-                             visibility_of_element_located((By.XPATH, "/html/body/app-root/app-shell/div[2]/div/"
-                                                                      "div/div[1]/jl-cit-your-account/div/div/div[2]"
-                                                                      "/div[2]/div/jl-cit-your-account-applicant-card/"
+                             visibility_of_element_located((By.XPATH, "/html/body/app-root/app-shell/div[2]/div/div/"
+                                                                      "div[1]/jl-cit-your-account/div/div/div[3]/div[2]"
+                                                                      "/div/jl-cit-your-account-applicant-card/"
                                                                       "jl-cit-card-template/div/div/div[2]/"
                                                                       "jl-cit-button[1]/button")))
 
 if continueAppBtn.is_displayed():
     # click retrieve saved calc button as website displays an error first time, requires re-initialization
     continueAppBtn.click()
+    time.sleep(1)
 
 physicalPresenceSection = mWait.until(
     EC.visibility_of_element_located((By.XPATH, "/html/body/app-root/app-shell/jl-cit-nav-bar/"
@@ -92,6 +94,13 @@ try:
     # will only process one row per argument data[:1], remove this to process all rows.
     for item in data:
         # Page Element Definitions
+        addAbsenceBtn = mWait.until(
+            EC.visibility_of_element_located((By.XPATH, "//*[@id=\"physical-presence-absence-from-canada-button\"]")))
+
+        if addAbsenceBtn.is_displayed():
+            mDriver.execute_script("arguments[0].scrollIntoView();", addAbsenceBtn)
+            addAbsenceBtn.click()
+
         viewAbsenceDestination = mDriver.find_element(By.ID, "country")
         fromYear = mDriver.find_element(By.ID, "date-exitYear-date-left-canada-default")
         fromMonth = mDriver.find_element(By.ID, "date-exitMonth-date-left-canada-default")
@@ -99,6 +108,14 @@ try:
         toYear = mDriver.find_element(By.ID, "date-returnYear-date-return-to-canada-default")
         toMonth = mDriver.find_element(By.ID, "date-returnMonth-date-return-to-canada-default")
         toDate = mDriver.find_element(By.ID, "date-returnDay-date-return-to-canada-default")
+        # Scroll to the end of absence section
+        absenceCardCancelBtn = mDriver.find_element(By.ID, "AbsenceFromCanadaCancelAddingCardButtondefault")
+        mDriver.execute_script("arguments[0].scrollIntoView();", absenceCardCancelBtn)
+        # Select No option for the question did you visit more than one country
+        moreThanOneCountryVisitNoOption = mWait.until(EC.visibility_of_element_located(
+            (By.XPATH, "//*[@id=\"visit-more-than-one-countrydefault\"]/div/div/div/jl-cit-radio-input[2]/div/label")))
+        if moreThanOneCountryVisitNoOption.is_displayed():
+            moreThanOneCountryVisitNoOption.click()
         absenceReason = mDriver.find_element(By.ID, "absenceReasonSelectordefault")
         btnSaveRecord = mDriver.find_element(By.XPATH, "//*[@id=\"absenceFromCanadaSaveCardButtondefault\"]/button")
 
