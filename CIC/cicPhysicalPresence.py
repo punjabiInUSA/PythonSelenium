@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.keys import Keys
 
 """
 This script is designed to assist individuals who need to enter absence details for the physical presence calculator
@@ -153,18 +154,27 @@ try:
 
         # Enter Date you left
         viewFromDate.clear()
-        # viewFromDate.send_keys("04-15-2023") //debug
-        exitFullDate = datetime.strptime(item['exitFullDate'], '%Y-%m-%d').strftime('%m-%d-%Y')
-        item['exitFullDate'] = exitFullDate
-        viewFromDate.send_keys(item['exitFullDate'])
+
+        # commented out since the date widget is now replaced with a picker
+        # exitFullDate = datetime.strptime(item['exitFullDate'], '%Y-%m-%d').strftime('%m-%d-%Y')
+        # item['exitFullDate'] = exitFullDate
+        # viewFromDate.send_keys(item['exitFullDate'])
+
+        viewFromDate.send_keys(item['exitDate'])
+        viewFromDate.send_keys(item['exitMonth'])
+        viewFromDate.send_keys(Keys.ARROW_RIGHT)
+        viewFromDate.send_keys(item['exitYear'])
 
         # Enter Date you returned
         viewToDate.clear()
-        # viewToDate.send_keys("04-15-2023") //debug
-        entryFullDate = datetime.strptime(item['entryFullDate'], '%Y-%m-%d').strftime('%m-%d-%Y')
-        item['entryFullDate'] = entryFullDate
-        viewToDate.send_keys(item['entryFullDate'])
-
+        # commented out since the date widget is now replaced with a picker
+        # entryFullDate = datetime.strptime(item['entryFullDate'], '%Y-%m-%d').strftime('%m-%d-%Y')
+        # item['entryFullDate'] = entryFullDate
+        # viewToDate.send_keys(item['entryFullDate'])
+        viewToDate.send_keys(item['entryDate'])
+        viewToDate.send_keys(item['entryMonth'])
+        viewToDate.send_keys(Keys.ARROW_RIGHT)
+        viewToDate.send_keys(item['entryYear'])
         # Enter Reason for Absence
         viewAbsenceReason.clear()
         viewAbsenceReason.send_keys(item['purpose'])
@@ -184,5 +194,5 @@ finally:
     end_time = time.time()
     print(f'Script end time {end_time}')
     elapsed_time = end_time - start_time
-    print(f'Script took {elapsed_time} seconds')
+    print(f'Total Script time: {elapsed_time} seconds')
     mDriver.quit()

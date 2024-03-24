@@ -50,7 +50,8 @@ for row in targetSheetName.iter_rows(min_row=2, max_row=6, values_only=True):
     # Prints are for debugging only
     # print(item['country'])
     # print(item['exitDate'])
-    print(item['entryDate'])
+    # print(item['entryDate'])
+    print(item['exitFullDate'])
     data.append(item)
 
 # Create a new instance of Edge webdriver
@@ -146,6 +147,6 @@ finally:
     # Close the browser
     end_time = time.time()
     print(f'Script end time {end_time}')
-    mDriver.quit()
     elapsed_time = end_time - start_time
-    print(f'Script took {elapsed_time} seconds')
+    print(f'Total Script time: {elapsed_time} seconds')
+    mDriver.quit()
