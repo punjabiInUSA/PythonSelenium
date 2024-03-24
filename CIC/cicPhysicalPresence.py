@@ -73,14 +73,17 @@ userField.send_keys(username)
 pwdField.send_keys(password)
 btnLogin.click()
 time.sleep(2)
-
-paragraph = mWait.until(EC.
+try:
+    paragraph = mWait.until(EC.
                         visibility_of_element_located((By.XPATH, "//*[@id=\"wb-main-in\"]/div[2]/div[1]/p/strong")))
 
-if paragraph.is_displayed():
-    # click retrieve saved calc button as website displays an error first time, requires re-initialization
-    retrieveSavedCalc = mDriver.find_element(By.XPATH, "//*[@id=\"wb-main-in\"]/div[1]/a[5]")
-    retrieveSavedCalc.click()
+    if paragraph.is_displayed():
+        # click retrieve saved calc button as website displays an error first time, requires re-initialization
+        retrieveSavedCalc = mDriver.find_element(By.XPATH, "//*[@id=\"wb-main-in\"]/div[1]/a[5]")
+        retrieveSavedCalc.click()
+
+except Exception as e:
+    print(f"Caught an error: {e}")
 
 viewExistingCalc = mWait.until(
     EC.visibility_of_element_located((By.XPATH, "//*[@id=\"wb-main-in\"]/table/tbody/tr/td[3]/a[1]")))
@@ -180,6 +183,6 @@ finally:
     # btnSaveRecord.click()
     end_time = time.time()
     print(f'Script end time {end_time}')
-    mDriver.quit()
     elapsed_time = end_time - start_time
     print(f'Script took {elapsed_time} seconds')
+    mDriver.quit()
